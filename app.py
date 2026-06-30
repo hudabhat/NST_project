@@ -1,5 +1,6 @@
 import os
 import torch
+from pathlib import Path
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
@@ -33,11 +34,13 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 encoder = VGGEncoder("vgg_normalised.pth").to(device)
 decoder = Decoder().to(device)
+
+BASE_DIR = Path(__file__).resolve().parent
+
+decoder_path = BASE_DIR / "experiment" / "final_exp" / "decoder_final.pth"
+
 decoder.load_state_dict(
-    torch.load(
-        'C:\\Users\\hudab\\OneDrive\\Desktop\\NST\\experiment\\final_exp\\decoder_final.pth',
-        map_location=device
-    )
+    torch.load(decoder_path, map_location=device)
 )
 
 decoder.to(device)
